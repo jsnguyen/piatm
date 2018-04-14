@@ -3,10 +3,10 @@ import json
 import urllib.request
 import numpy as np
 
-filename='data.dat'
 counter=0
-length = 4*60*60
-temp=[]
+f_counter=0
+length = 24*60*60
+datastr=[]
 while True:
     data = json.loads(urllib.request.urlopen("http://10.0.0.111:8000/data/").read())
     time = data['time']
@@ -14,11 +14,15 @@ while True:
     humidity = data['humidity']
     pressure = data['pressure']
 
-    with open(filename, 'a') as f:
-        f.write(str(time) +' '+ str(temp)+' '+ str(pressure)+' '+ str(humidity) + '\n')
+    line = str(time) +' '+ str(temp)+' '+ str(pressure)+' '+ str(humidity) + '\n'
+    datastr.append(line)
 
-    if counter > length:
-        break
+    if len(datastr) == 10:
+        with open('data_'+str(f_counter)+'.dat', 'w') as f:
+            for el in datastr:
+                f.write(el)
+            datastr=[]
+            f_counter+=1
 
     if counter%5 == 0:
         print(counter,'of',length)
