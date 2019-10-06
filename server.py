@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from get_temp import get_temp
+from sensors import get_all_sensor_data
 import json
 
 class S(BaseHTTPRequestHandler):
@@ -11,17 +11,10 @@ class S(BaseHTTPRequestHandler):
     def do_GET(self):
         self.do_HEAD()
         if self.path == '/':
-            self.wfile.write("<html><body><h1>hi!</h1></body></html>".encode())
-        elif self.path == '/temp/':
-            temp = {'temp':get_temp()}
-            self.wfile.write(json.dumps(temp).encode())
-
-    def do_POST(self):
-        self._set_headers()
-        self.wfile.write("<html><body><h1>POST!</h1></body></html>".encode())
+            self.wfile.write(json.dumps(get_all_sensor_data()).encode())
 
 def run(server_class=HTTPServer, handler_class=S, port=8000):
-    server_address = ('10.0.0.111', port)
+    server_address = ('10.0.0.66', port)
     httpd = server_class(server_address, handler_class)
     print ('Starting httpd...')
     httpd.serve_forever()
